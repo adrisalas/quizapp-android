@@ -15,11 +15,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button buttonStartQuiz = findViewById(R.id.button_start_quiz);
-        buttonStartQuiz.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, QuizActivity.class));
-            }
-        });
+        buttonStartQuiz.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, QuizActivity.class)));
     }
 }
