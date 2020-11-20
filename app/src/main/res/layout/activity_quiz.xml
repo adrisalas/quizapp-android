@@ -9,17 +9,19 @@
     tools:context=".QuizActivity">
 
     <TextView
-        android:id="@+id/text_view_question_count"
+        android:id="@+id/text_view_score_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Score: 0"
         android:textColor="@color/text"/>
+
     <TextView
+        android:id="@+id/text_view_question_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/text_view_score_count"
         android:text="Question: 1/x"
-        android:textColor="@color/text"
-        android:layout_below="@id/text_view_question_count"/>
+        android:textColor="@color/text" />
     <TextView
         android:id="@+id/text_view_countdown"
         android:layout_width="wrap_content"

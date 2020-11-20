@@ -5,8 +5,12 @@ import es.uma.quizapp.model.Question;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuizDbHelper extends SQLiteOpenHelper {
 
@@ -29,7 +33,6 @@ public class QuizDbHelper extends SQLiteOpenHelper {
                 QuestionsColumns.COLUMN_ANSWER_1 + " TEXT, " +
                 QuestionsColumns.COLUMN_ANSWER_2 + " TEXT, " +
                 QuestionsColumns.COLUMN_ANSWER_3 + " TEXT, " +
-                QuestionsColumns.COLUMN_ANSWER_4 + " TEXT, " +
                 QuestionsColumns.COLUMN_ANSWER_4 + " TEXT, " +
                 QuestionsColumns.COLUMN_CORRECT_ANSWER + " INTEGER" + ")");
         initQuestionsTable();
@@ -55,7 +58,29 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         cv.put(QuestionsColumns.COLUMN_ANSWER_1, question.getOption1());
         cv.put(QuestionsColumns.COLUMN_ANSWER_2, question.getOption2());
         cv.put(QuestionsColumns.COLUMN_ANSWER_3, question.getOption3());
+        cv.put(QuestionsColumns.COLUMN_ANSWER_4, question.getOption4());
         cv.put(QuestionsColumns.COLUMN_CORRECT_ANSWER, question.getAnswerNumber());
         db.insert(QuestionsColumns.TABLE_NAME, null, cv);
+    }
+
+    public List<Question> getAllQuestions(){
+        List<Question> questionList = new ArrayList<>();
+        db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + QuestionsColumns.TABLE_NAME, null);
+
+        if (c.moveToFirst()) {
+            do {
+                Question question = Question.builder().build();
+                question.setQuestion(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_QUESTION)));
+                question.setOption1(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_ANSWER_1)));
+                question.setOption2(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_ANSWER_2)));
+                question.setOption3(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_ANSWER_3)));
+                question.setOption4(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_ANSWER_4)));
+                question.setAnswerNumber(c.getInt(c.getColumnIndex(QuestionsColumns.COLUMN_CORRECT_ANSWER)));
+                questionList.add(question);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return questionList;
     }
 }

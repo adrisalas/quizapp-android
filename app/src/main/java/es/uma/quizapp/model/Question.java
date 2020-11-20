@@ -1,9 +1,11 @@
 package es.uma.quizapp.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @AllArgsConstructor
+@Builder
 @Data
 public class Question {
     private String question;
