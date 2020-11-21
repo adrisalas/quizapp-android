@@ -63,14 +63,14 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         db.insert(QuestionsColumns.TABLE_NAME, null, cv);
     }
 
-    public List<Question> getAllQuestions(){
+    public List<Question> getAllQuestions() {
         List<Question> questionList = new ArrayList<>();
         db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM " + QuestionsColumns.TABLE_NAME, null);
 
         if (c.moveToFirst()) {
             do {
-                Question question = Question.builder().build();
+                Question question = new Question();
                 question.setQuestion(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_QUESTION)));
                 question.setOption1(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_ANSWER_1)));
                 question.setOption2(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_ANSWER_2)));
