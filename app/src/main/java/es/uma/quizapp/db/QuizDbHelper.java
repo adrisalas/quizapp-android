@@ -19,7 +19,7 @@ public class QuizDbHelper extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
 
-    public QuizDbHelper(Context context) {
+public QuizDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -63,8 +63,8 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         db.insert(QuestionsColumns.TABLE_NAME, null, cv);
     }
 
-    public List<Question> getAllQuestions() {
-        List<Question> questionList = new ArrayList<>();
+    public ArrayList<Question> getAllQuestions() {
+        ArrayList<Question> questionList = new ArrayList<>();
         db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM " + QuestionsColumns.TABLE_NAME, null);
 

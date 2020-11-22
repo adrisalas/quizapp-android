@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         highScore = prefs.getInt(KEY_HIGHSCORE, 0);
-        textViewHighScore.setText("Highscore: " + highScore);
+        String highScoreString = "Highsore:" + highScore;
+        textViewHighScore.setText(highScoreString);
 
         Button buttonStartQuiz = findViewById(R.id.button_start_quiz);
         buttonStartQuiz.setOnClickListener(view -> startActivityForResult(new Intent(MainActivity.this, QuizActivity.class), quizCode));
@@ -38,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
             int score = data.getIntExtra(QuizActivity.extraScore, 0);
             if (score > highScore) {
                 highScore = score;
-                textViewHighScore.setText("Highscore: " + highScore);
+                String highScoreString = "Highsore:" + highScore;
+                textViewHighScore.setText(highScoreString);
                 SharedPreferences prefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt(KEY_HIGHSCORE, highScore);
