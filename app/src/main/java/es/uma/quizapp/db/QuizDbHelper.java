@@ -48,10 +48,10 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + QuestionsColumns.TABLE_NAME);
 
         addQuestion(new Question("Programming OOP","What is a correct syntax to output \"Hello World\" in Java?","System.out.println(\"Hello World\");", "print (\"Hello World\");", "Console.WriteLine(\"Hello World\");", " echo(\"Hello World\");", 1));
+        addQuestion(new Question("Programming OOP","Which one is not a sorting algorithm?", "Bubble", "QuickSort", "Insertion", "OrderBuilder", 4));
 
-        addQuestion(new Question("Sociales: Tema 2","C is the correct", "A", "B", "C", "D", 3));
-        addQuestion(new Question("Sociales: Tema 2","D is the correct", "A", "B", "C", "D", 4));
-        addQuestion(new Question("Sociales: Tema 2","B is the correct again", "A", "B", "C", "D", 2));
+        addQuestion(new Question("Redes Inalambricas","¿En que puerto de un servidor se reciben las peticiones http?","443", "22", "80", "12345", 3));
+        addQuestion(new Question("Ciberseguridad", "¿Cuál es un algoritmo de cifrado?", "SHA-258", "SHA-3", "RST", "Assert", 2));
 
         addQuestion(new Question("Z_Dummy","A is correct", "A", "B", "C", "D", 1));
         addQuestion(new Question("Z_Dummy","B is correct", "A", "B", "C", "D", 2));
