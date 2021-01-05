@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class QuizDbHelper extends SQLiteOpenHelper {
 
@@ -19,16 +18,16 @@ public class QuizDbHelper extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
 
-public QuizDbHelper(Context context) {
+    public QuizDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
-
         db.execSQL("CREATE TABLE " + QuestionsColumns.TABLE_NAME +
                 " ( " + QuestionsColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                QuestionsColumns.COLUMN_TOPIC + " TEXT, " +
                 QuestionsColumns.COLUMN_QUESTION + " TEXT, " +
                 QuestionsColumns.COLUMN_ANSWER_1 + " TEXT, " +
                 QuestionsColumns.COLUMN_ANSWER_2 + " TEXT, " +
@@ -44,16 +43,26 @@ public QuizDbHelper(Context context) {
         onCreate(db);
     }
 
-    private void initQuestionsTable() {
-        addQuestion(new Question("A is correct", "A", "B", "C", "D", 1));
-        addQuestion(new Question("B is correct", "A", "B", "C", "D", 2));
-        addQuestion(new Question("C is correct", "A", "B", "C", "D", 3));
-        addQuestion(new Question("D is correct", "A", "B", "C", "D", 4));
-        addQuestion(new Question("B is correct again", "A", "B", "C", "D", 2));
+    public void initQuestionsTable() {
+        db = getWritableDatabase();
+        db.execSQL("DELETE FROM " + QuestionsColumns.TABLE_NAME);
+
+        addQuestion(new Question("Programming OOP","What is a correct syntax to output \"Hello World\" in Java?","System.out.println(\"Hello World\");", "print (\"Hello World\");", "Console.WriteLine(\"Hello World\");", " echo(\"Hello World\");", 1));
+
+        addQuestion(new Question("Sociales: Tema 2","C is the correct", "A", "B", "C", "D", 3));
+        addQuestion(new Question("Sociales: Tema 2","D is the correct", "A", "B", "C", "D", 4));
+        addQuestion(new Question("Sociales: Tema 2","B is the correct again", "A", "B", "C", "D", 2));
+
+        addQuestion(new Question("Z_Dummy","A is correct", "A", "B", "C", "D", 1));
+        addQuestion(new Question("Z_Dummy","B is correct", "A", "B", "C", "D", 2));
+        addQuestion(new Question("Z_Dummy","C is correct", "A", "B", "C", "D", 3));
+        addQuestion(new Question("Z_Dummy","D is correct", "A", "B", "C", "D", 4));
+        addQuestion(new Question("Z_Dummy","B is correct again", "A", "B", "C", "D", 2));
     }
 
     private void addQuestion(Question question) {
         ContentValues cv = new ContentValues();
+        cv.put(QuestionsColumns.COLUMN_TOPIC, question.getTopic());
         cv.put(QuestionsColumns.COLUMN_QUESTION, question.getQuestion());
         cv.put(QuestionsColumns.COLUMN_ANSWER_1, question.getOption1());
         cv.put(QuestionsColumns.COLUMN_ANSWER_2, question.getOption2());
@@ -63,14 +72,15 @@ public QuizDbHelper(Context context) {
         db.insert(QuestionsColumns.TABLE_NAME, null, cv);
     }
 
-    public ArrayList<Question> getAllQuestions() {
+    public ArrayList<Question> getQuestionsFromTopic(String topic) {
         ArrayList<Question> questionList = new ArrayList<>();
         db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + QuestionsColumns.TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM " + QuestionsColumns.TABLE_NAME + " WHERE " + QuestionsColumns.COLUMN_TOPIC + " = \"" + topic + "\"", null);
 
         if (c.moveToFirst()) {
             do {
                 Question question = new Question();
+                question.setTopic(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_TOPIC)));
                 question.setQuestion(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_QUESTION)));
                 question.setOption1(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_ANSWER_1)));
                 question.setOption2(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_ANSWER_2)));
@@ -83,4 +93,19 @@ public QuizDbHelper(Context context) {
         c.close();
         return questionList;
     }
+
+    public ArrayList<String> getAllTopics() {
+        ArrayList<String> topicList = new ArrayList<>();
+        db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT DISTINCT " + QuestionsColumns.COLUMN_TOPIC + " FROM " + QuestionsColumns.TABLE_NAME + " ORDER BY " + QuestionsColumns.COLUMN_TOPIC, null);
+
+        if (c.moveToFirst()) {
+            do {
+                topicList.add(c.getString(c.getColumnIndex(QuestionsColumns.COLUMN_TOPIC)));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return topicList;
+    }
+
 }

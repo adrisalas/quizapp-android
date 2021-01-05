@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public final class QuizContract {
-
     public static class QuestionsColumns implements BaseColumns {
         public static final String TABLE_NAME = "quiz_questions";
+        public static final String COLUMN_TOPIC = "TOPIC";
         public static final String COLUMN_QUESTION = "QUESTION";
         public static final String COLUMN_ANSWER_1 = "ANSWER_1";
         public static final String COLUMN_ANSWER_2 = "ANSWER_2";

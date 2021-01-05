@@ -1,9 +1,7 @@
-package es.uma.quizapp;
+package es.uma.quizapp.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,22 +14,19 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
+import es.uma.quizapp.R;
 import es.uma.quizapp.db.QuizDbHelper;
 import es.uma.quizapp.model.Question;
+import es.uma.quizapp.util.SingletonMap;
 
 public class QuizActivity extends AppCompatActivity {
 
-    public static final String extraScore = "extraScore";
-    private static final long countDown = 31000;
+    private final SingletonMap singletonMap = SingletonMap.getInstance();
+    private String selectedTopic;
 
-    private static final String KEY_SCORE = "keyScore";
-    private static final String KEY_QUESTION_COUNT = "keyQuestionCount";
-    private static final String KEY_MILLIS_LEFT = "keyMillisLeft";
-    private static final String KEY_ANSWERED = "keyAnswered";
-    private static final String KEY_QUESTION_LIST = "keyQuestionList";
+    private static final long countDown = 31000;
 
     private TextView textViewQuestion;
     private TextView textViewScore;
@@ -76,40 +71,26 @@ public class QuizActivity extends AppCompatActivity {
         textColorDefaultRadioButton = radioButton1.getTextColors();
         textColorDefaultCounterDown = textViewCountDown.getTextColors();
 
-        if(savedInstanceState == null) {
-            QuizDbHelper dbHelper = new QuizDbHelper(this);
+        QuizDbHelper dbHelper = new QuizDbHelper(this);
+        selectedTopic = (String) singletonMap.get("SELECTED_QUIZ");
+        questionList = dbHelper.getQuestionsFromTopic(selectedTopic);
+        questionCountTotal = questionList.size();
+        Collections.shuffle(questionList);
+        showNextQuestion();
 
-            questionList = dbHelper.getAllQuestions();
-            questionCountTotal = questionList.size();
-            Collections.shuffle(questionList);
-            showNextQuestion();
-        } else {
-            questionList = savedInstanceState.getParcelableArrayList(KEY_QUESTION_LIST);
-            questionCountTotal = questionList.size();
-            questionCounter = savedInstanceState.getInt(KEY_QUESTION_LIST);
-            currentQuestion = questionList.get(questionCounter - 1);
-            score = savedInstanceState.getInt(KEY_SCORE);
-            timeLeft = savedInstanceState.getLong(KEY_MILLIS_LEFT);
-            answered = savedInstanceState.getBoolean(KEY_ANSWERED);
-            if (!answered) {
-                startCountDown();
-            } else {
-                updateCountDown();
-                showSolution();
-            }
-        }
         buttonConfirmNext.setOnClickListener(view -> {
             if (!answered) {
                 if (radioButton1.isChecked() || radioButton2.isChecked() || radioButton3.isChecked() || radioButton4.isChecked()) {
                     checkAnswer();
                 } else {
-                    Toast.makeText(QuizActivity.this, "Please select an answer", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QuizActivity.this, getString(R.string.toastAnswer), Toast.LENGTH_SHORT).show();
                 }
             } else {
                 showNextQuestion();
             }
         });
     }
+
     private void showNextQuestion() {
         radioButton1.setTextColor(textColorDefaultRadioButton);
         radioButton2.setTextColor(textColorDefaultRadioButton);
@@ -124,10 +105,10 @@ public class QuizActivity extends AppCompatActivity {
             radioButton3.setText(currentQuestion.getOption3());
             radioButton4.setText(currentQuestion.getOption4());
             questionCounter++;
-            String questionCount = "Question: " + questionCounter + "/" + questionCountTotal;
+            String questionCount = getString(R.string.questionCounter) + " " + questionCounter + "/" + questionCountTotal;
             textViewQuestionCount.setText(questionCount);
             answered = false;
-            String confirmNext = "Confirm";
+            String confirmNext = getString(R.string.confirm);
             buttonConfirmNext.setText(confirmNext);
             timeLeft = countDown;
             startCountDown();
@@ -172,7 +153,7 @@ public class QuizActivity extends AppCompatActivity {
         int answerNumber = radioGroup.indexOfChild(rbSelected) + 1;
         if (answerNumber == currentQuestion.getAnswerNumber()) {
             score++;
-            String viewScore = "Score: ";
+            String viewScore = getString(R.string.scoreCounter) + " " + score;
             textViewScore.setText(viewScore);
         }
         showSolution();
@@ -186,37 +167,37 @@ public class QuizActivity extends AppCompatActivity {
         switch (currentQuestion.getAnswerNumber()) {
             case 1:
                 radioButton1.setTextColor(Color.GREEN);
-                viewQuestion = "Answer A is correct";
+                viewQuestion = getString(R.string.correctAnswerA);
                 textViewQuestion.setText(viewQuestion);
                 break;
             case 2:
                 radioButton2.setTextColor(Color.GREEN);
-                viewQuestion = "Answer B is correct";
+                viewQuestion = getString(R.string.correctAnswerB);
                 textViewQuestion.setText(viewQuestion);
                 break;
             case 3:
                 radioButton3.setTextColor(Color.GREEN);
-                viewQuestion = "Answer C is correct";
+                viewQuestion = getString(R.string.correctAnswerC);
                 textViewQuestion.setText(viewQuestion);
                 break;
             case 4:
                 radioButton4.setTextColor(Color.GREEN);
-                viewQuestion = "Answer D is correct";
+                viewQuestion = getString(R.string.correctAnswerD);
                 textViewQuestion.setText(viewQuestion);
                 break;
         }
         String confirmNext;
         if (questionCounter == questionCountTotal) {
-            confirmNext = "Finish";
+            confirmNext = getString(R.string.finish);
         } else {
-            confirmNext = "Next";
+            confirmNext = getString(R.string.next);
         }
         buttonConfirmNext.setText(confirmNext);
     }
     private void finishQuiz() {
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(extraScore, score);
-        setResult(RESULT_OK, resultIntent);
+        if(score > (int) singletonMap.getOrDefault(selectedTopic,0)){
+            singletonMap.put(selectedTopic, score);
+        }
         finish();
     }
 
@@ -225,26 +206,15 @@ public class QuizActivity extends AppCompatActivity {
         if (getBackButtonTime + 1000 > System.currentTimeMillis()) {
             finishQuiz();
         } else {
-            Toast.makeText(this, "Press back again to finish", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.backToFinish, Toast.LENGTH_SHORT).show();
         }
         getBackButtonTime = System.currentTimeMillis();
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_SCORE, score);
-        outState.putInt(KEY_QUESTION_COUNT, questionCounter);
-        outState.putLong(KEY_MILLIS_LEFT, timeLeft);
-        outState.putBoolean(KEY_ANSWERED, answered);
-        outState.putParcelableArrayList(KEY_QUESTION_LIST, questionList);
-    }
-
-    @Override
     protected void onDestroy() {super.onDestroy();
-    if(countDownTimer != null){
-        countDownTimer.cancel();
+        if(countDownTimer != null){
+            countDownTimer.cancel();
+        }
     }
-    }
-
 }

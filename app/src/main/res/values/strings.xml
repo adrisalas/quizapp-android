@@ -1,3 +1,24 @@
 <resources>
-    <string name="app_name">QuizApp</string>
+    <string name="app_name">QuizApp - Adri \&amp; Poky</string>
+    <string name="import_btn">IMPORT</string>
+    <string name="advisory">Given the app is a Quiz App, the questions are in a specific language, the rest of the app supports <b>spanish</b> and <b>english.</b></string>
+    <string name="time">0:30</string>
+    <string name="questionCounter">Question:</string>
+    <string name="scoreCounter">Score:</string>
+    <string name="option1">Option 1</string>
+    <string name="option2">Option 2</string>
+    <string name="option3">Option 3</string>
+    <string name="option4">Option 4</string>
+    <string name="confirm">Confirm</string>
+    <string name="question">Null Question?</string>
+    <string name="highscore">HIGHSCORE:</string>
+    <string name="startQuiz">Start Quiz</string>
+    <string name="backToFinish">Press back again to finish</string>
+    <string name="next">Next</string>
+    <string name="finish">Finish</string>
+    <string name="toastAnswer">Please select an answer</string>
+    <string name="correctAnswerA">Answer A is correct</string>
+    <string name="correctAnswerB">Answer B is correct</string>
+    <string name="correctAnswerC">Answer C is correct</string>
+    <string name="correctAnswerD">Answer D is correct</string>
 </resources>

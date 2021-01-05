@@ -1,52 +1,51 @@
 package es.uma.quizapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
-    private static final int quizCode = 1;
-    public static final String SHARED_PREFS = "sharedPrefs";
-    public static final String KEY_HIGHSCORE = "keyHighscore";
-    private TextView textViewHighScore;
-    private int highScore;
+import es.uma.quizapp.activity.LobbyQuiz;
+import es.uma.quizapp.db.QuizDbHelper;
+import es.uma.quizapp.util.SingletonMap;
 
+public class MainActivity extends AppCompatActivity {
+
+    private final SingletonMap singletonMap = SingletonMap.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textViewHighScore = findViewById(R.id.text_view_highscore);
+        Button button_import = findViewById(R.id.button_import);
+        QuizDbHelper dbHelper = new QuizDbHelper(this);
 
-        SharedPreferences prefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        highScore = prefs.getInt(KEY_HIGHSCORE, 0);
-        String highScoreString = "Highsore:" + highScore;
-        textViewHighScore.setText(highScoreString);
+        ListView listView_topics = findViewById(R.id.listView_topics);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.button_list_item, dbHelper.getAllTopics());
+        listView_topics.setAdapter(arrayAdapter);
 
-        Button buttonStartQuiz = findViewById(R.id.button_start_quiz);
-        buttonStartQuiz.setOnClickListener(view -> startActivityForResult(new Intent(MainActivity.this, QuizActivity.class), quizCode));
+        button_import.setOnClickListener(view -> {
+            dbHelper.initQuestionsTable();
+            finish();
+            startActivity(getIntent());
+        });
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.advisory)
+                .setPositiveButton(android.R.string.yes, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == quizCode && resultCode == RESULT_OK) {
-            int score = data.getIntExtra(QuizActivity.extraScore, 0);
-            if (score > highScore) {
-                highScore = score;
-                String highScoreString = "Highsore:" + highScore;
-                textViewHighScore.setText(highScoreString);
-                SharedPreferences prefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putInt(KEY_HIGHSCORE, highScore);
-                editor.apply();
-            }
-        }
+    public void selectTopic(View v){
+        singletonMap.put("SELECTED_QUIZ",((TextView) v).getText());
+        startActivity(new Intent(this, LobbyQuiz.class));
     }
-
 }

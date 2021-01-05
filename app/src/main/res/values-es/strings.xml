@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">App de Cuestionarios - Adri \&amp; Poky</string>
+    <string name="import_btn">IMPORTAR</string>
+    <string name="advisory">Dado que la aplicación es una app de cuestionarios, las preguntas están en un idioma específico, el resto de la app soporta <b>español</b> e <b>ingles.</b></string>
+    <string name="time">0:30</string>
+    <string name="questionCounter">Pregunta:</string>
+    <string name="scoreCounter">Puntuación:</string>
+    <string name="option1">Opción 1</string>
+    <string name="option2">Opción 2</string>
+    <string name="option3">Opción 3</string>
+    <string name="option4">Opción 4</string>
+    <string name="confirm">Confirmar</string>
+    <string name="question">¿Pregunta Null?</string>
+    <string name="highscore">MÁXIMA PUNTUACIÓN:</string>
+    <string name="startQuiz">Empezar cuestionario</string>
+    <string name="backToFinish">Pulsa otra vez para salir</string>
+    <string name="next">Siguiente</string>
+    <string name="finish">Terminar</string>
+    <string name="toastAnswer">Por favor selecciona una respuesta</string>
+    <string name="correctAnswerA">A es la respuesta correcta</string>
+    <string name="correctAnswerB">B es la respuesta correcta</string>
+    <string name="correctAnswerC">C es la respuesta correcta</string>
+    <string name="correctAnswerD">D es la respuesta correcta</string>
+</resources>
