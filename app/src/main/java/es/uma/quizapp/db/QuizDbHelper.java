@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class QuizDbHelper extends SQLiteOpenHelper {
 
@@ -22,6 +23,10 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * Cuando se abre la app por primera vez se ejecuta este metodo
+     * @param db base de datos, android injecta este valor con el contexto
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
@@ -37,12 +42,21 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         initQuestionsTable();
     }
 
+    /**
+     * Se usa para actualizar la base de datos cuando se actualice la aplicacion
+     * @param db base de datos, android injecta este valor con el contexto
+     * @param oldVersion version anterior de la base de datos, android injecta este valor con el contexto
+     * @param newVersion version actual de la base de datos, android injecta este valor con el contexto
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + QuestionsColumns.TABLE_NAME);
         onCreate(db);
     }
 
+    /**
+     * Importa valores en la base de datos
+     */
     public void initQuestionsTable() {
         db = getWritableDatabase();
         db.execSQL("DELETE FROM " + QuestionsColumns.TABLE_NAME);
@@ -60,6 +74,10 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         addQuestion(new Question("Z_Dummy","B is correct again", "A", "B", "C", "D", 2));
     }
 
+    /**
+     * Inserta en la base de datos la pregunta
+     * @param question pregunta que guardar
+     */
     private void addQuestion(Question question) {
         ContentValues cv = new ContentValues();
         cv.put(QuestionsColumns.COLUMN_TOPIC, question.getTopic());
@@ -72,11 +90,16 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         db.insert(QuestionsColumns.TABLE_NAME, null, cv);
     }
 
+    /**
+     * Al pasarle "topic" tenemos que evitar SQL Injection, para eso la query realizada en este
+     * metodo se parametriza con ? y new String[]{topic}
+     * @return Todos las preguntas dado un topic
+     */
     public ArrayList<Question> getQuestionsFromTopic(String topic) {
         ArrayList<Question> questionList = new ArrayList<>();
         db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + QuestionsColumns.TABLE_NAME + " WHERE " + QuestionsColumns.COLUMN_TOPIC + " = \"" + topic + "\"", null);
 
+        Cursor c = db.rawQuery("SELECT * FROM " + QuestionsColumns.TABLE_NAME + " WHERE " + QuestionsColumns.COLUMN_TOPIC + " = \"?\"",  new String[]{topic});
         if (c.moveToFirst()) {
             do {
                 Question question = new Question();
@@ -94,7 +117,10 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         return questionList;
     }
 
-    public ArrayList<String> getAllTopics() {
+    /**
+     * @return Todos los temas/cuestionarios que estan cargados en SQLite
+     */
+    public List<String> getAllTopics() {
         ArrayList<String> topicList = new ArrayList<>();
         db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT DISTINCT " + QuestionsColumns.COLUMN_TOPIC + " FROM " + QuestionsColumns.TABLE_NAME + " ORDER BY " + QuestionsColumns.COLUMN_TOPIC, null);

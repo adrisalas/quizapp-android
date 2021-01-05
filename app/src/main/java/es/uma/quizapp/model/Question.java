@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+/**
+ * Por limpieza de codigo se usa Lombok
+ * https://projectlombok.org/
+ */
 public class Question {
     private String topic;
     private String question;

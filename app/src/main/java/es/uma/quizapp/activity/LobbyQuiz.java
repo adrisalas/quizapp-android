@@ -10,10 +10,18 @@ import android.widget.TextView;
 import es.uma.quizapp.R;
 import es.uma.quizapp.util.SingletonMap;
 
+/**
+ * Pantalla previa al cuestionario, muestra el highscore previo
+ */
 public class LobbyQuiz extends AppCompatActivity {
 
     private final SingletonMap singletonMap = SingletonMap.getInstance();
 
+    /**
+     * Al crear la actividad llamamos al metodo load
+     * y hacemos un boton para pasar a la siguiente actividad
+     * @param savedInstanceState android injecta este atributo
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,12 +33,19 @@ public class LobbyQuiz extends AppCompatActivity {
         button_startQuiz.setOnClickListener(view -> startActivityForResult(new Intent(this, QuizActivity.class),1));
     }
 
+    /**
+     * Si hemos perdido el foco de la actividad (es decir, hemos entrado a otra)
+     * y volvemos a esta actividad, recargaremos la actividad para actualizar el highscore
+     */
     @Override
     protected void onResume() {
         super.onResume();
         load();
     }
 
+    /**
+     * Cargamos los datos del singletonMap en la pantalla
+     */
     private void load() {
         TextView text_title = findViewById(R.id.text_title);
         TextView text_highScore = findViewById(R.id.text_highscore);

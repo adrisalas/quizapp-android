@@ -5,7 +5,14 @@ import android.provider.BaseColumns;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+/**
+ * Por limpieza de codigo se usa Lombok
+ * https://projectlombok.org/
+ */
 public final class QuizContract {
+    /**
+     * Contrato de la tabla QUIZ_QUESTIONS
+     */
     public static class QuestionsColumns implements BaseColumns {
         public static final String TABLE_NAME = "quiz_questions";
         public static final String COLUMN_TOPIC = "TOPIC";
