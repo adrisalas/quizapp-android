@@ -99,7 +99,7 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         ArrayList<Question> questionList = new ArrayList<>();
         db = getReadableDatabase();
 
-        Cursor c = db.rawQuery("SELECT * FROM " + QuestionsColumns.TABLE_NAME + " WHERE " + QuestionsColumns.COLUMN_TOPIC + " = \"?\"",  new String[]{topic});
+        Cursor c = db.rawQuery("SELECT * FROM " + QuestionsColumns.TABLE_NAME + " WHERE " + QuestionsColumns.COLUMN_TOPIC + " = ? ",  new String[]{topic});
         if (c.moveToFirst()) {
             do {
                 Question question = new Question();

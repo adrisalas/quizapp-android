@@ -75,6 +75,8 @@ public class QuizActivity extends AppCompatActivity {
 
         textViewQuestion = findViewById(R.id.text_view_question);
         textViewScore = findViewById(R.id.text_view_score_count);
+        String viewScore = getString(R.string.scoreCounter) + " " + score;
+        textViewScore.setText(viewScore);
         textViewQuestionCount = findViewById(R.id.text_view_question_count);
         textViewCountDown = findViewById(R.id.text_view_countdown);
         radioGroup = findViewById(R.id.radio_group);
