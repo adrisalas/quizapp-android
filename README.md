@@ -14,13 +14,17 @@
 The app supports spanish and english, change the language of your mobile phone to switch between them: `Settings -> System -> Languages & Input`
 
 # Rúbrica
+
+Importante, la app necesita de acceso a internet para importar los cuestionarios (consulta una REST API), en caso de no tener acceso a internet no se descargara ningun quiz y no se podra usar la app. _(El emulador por defecto se conecta a internet)_
+
 - [x] 3 actividades: `MainActivity.java` `activity/LobbyQuiz.java` `activity/QuizActivity.java`
-- [X] Se evita SQL Injection _(No hay ningun texto donde escriba el usuario, se interactua con botones, ergo no se puede hacer injección de código)_
+- [x] Se evita SQL Injection _(No hay ningun texto donde escriba el usuario, se interactua con botones, ergo no se puede hacer injección de código)_
 - [x] SingletonMap _(Para seleccionar el quiz y guardar highscores)_
 - [x] 2 Notificaciones _(Dialog en `MainActivity.java` y Toast en `activity/QuizActivity.java`)_
-- [X] Soporte multidioma _(Español e Ingles)_
-- [X] ArrayAdapter+ListView _(En `MainActivity.java` para seleccionar el quiz)_
+- [x] Soporte multidioma _(Español e Ingles)_
+- [x] ArrayAdapter+ListView _(En `MainActivity.java` para seleccionar el quiz)_
 - Resto de cuestiones a criterio personal
+
 # Screenshots
 
 ![Toast](./screenshots/toastMessage.png)
