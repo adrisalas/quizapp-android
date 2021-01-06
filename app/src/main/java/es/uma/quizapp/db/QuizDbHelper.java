@@ -8,9 +8,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
+import android.util.JsonReader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class QuizDbHelper extends SQLiteOpenHelper {
 
@@ -55,23 +65,30 @@ public class QuizDbHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Importa valores en la base de datos
+     * Hace una llamada a una REST API https://quiz-android-api.herokuapp.com/
+     * Para poder ejecutar en android una llamada http hace falta encapsularla en un thread Async
+     * Los datos obtenidos los parseamos con el metodo privado readJson
      */
     public void initQuestionsTable() {
         db = getWritableDatabase();
         db.execSQL("DELETE FROM " + QuestionsColumns.TABLE_NAME);
 
-        addQuestion(new Question("Programming OOP","What is a correct syntax to output \"Hello World\" in Java?","System.out.println(\"Hello World\");", "print (\"Hello World\");", "Console.WriteLine(\"Hello World\");", " echo(\"Hello World\");", 1));
-        addQuestion(new Question("Programming OOP","Which one is not a sorting algorithm?", "Bubble", "QuickSort", "Insertion", "OrderBuilder", 4));
-
-        addQuestion(new Question("Redes Inalambricas","¿En que puerto de un servidor se reciben las peticiones http?","443", "22", "80", "12345", 3));
-        addQuestion(new Question("Ciberseguridad", "¿Cuál es un algoritmo de cifrado?", "SHA-258", "SHA-3", "RST", "Assert", 2));
-
-        addQuestion(new Question("Z_Dummy","A is correct", "A", "B", "C", "D", 1));
-        addQuestion(new Question("Z_Dummy","B is correct", "A", "B", "C", "D", 2));
-        addQuestion(new Question("Z_Dummy","C is correct", "A", "B", "C", "D", 3));
-        addQuestion(new Question("Z_Dummy","D is correct", "A", "B", "C", "D", 4));
-        addQuestion(new Question("Z_Dummy","B is correct again", "A", "B", "C", "D", 2));
+        AsyncTask.execute(() -> {
+            try {
+                URL apiURL = new URL("https://quiz-android-api.herokuapp.com/");
+                HttpsURLConnection connection = (HttpsURLConnection) apiURL.openConnection();
+                connection.setRequestProperty("Accept", "application/json");
+                if (connection.getResponseCode() >=200 && connection.getResponseCode() <= 300){
+                    InputStream responseBody = connection.getInputStream();
+                    readJson(new InputStreamReader(responseBody, StandardCharsets.UTF_8));
+                    connection.disconnect();
+                } else {
+                    throw new Exception("API refused to give a response");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
@@ -134,4 +151,48 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         return topicList;
     }
 
+    /**
+     * Este metodo usa JsonReader (que viene por defecto en Android), la respuesta esperada
+     * es que tengamos un array de preguntas, asi que primero declaramos el array, y luego vamos iterando
+     * objeto por objeto leyendo cada key (nextName) y los valores (nextString o nextInt), con esto creamos
+     * un objeto Question y cuando acabamos de leer el objeto guardamos en la base de datos esta Question
+     * @param responseBodyReader Body de la response http recibida
+     * @throws IOException Este metodo solo esta preparado para leer el json de https://quiz-android-api.herokuapp.com/
+     */
+    private void readJson(InputStreamReader responseBodyReader) throws IOException {
+        JsonReader jsonReader = new JsonReader(responseBodyReader);
+        jsonReader.beginArray();
+        while(jsonReader.hasNext()){
+            jsonReader.beginObject();
+            Question question = new Question();
+            while(jsonReader.hasNext()){
+                switch(jsonReader.nextName()){
+                    case "topic":
+                        question.setTopic(jsonReader.nextString());
+                        break;
+                    case "question":
+                        question.setQuestion(jsonReader.nextString());
+                        break;
+                    case "option1":
+                        question.setOption1(jsonReader.nextString());
+                        break;
+                    case "option2":
+                        question.setOption2(jsonReader.nextString());
+                        break;
+                    case "option3":
+                        question.setOption3(jsonReader.nextString());
+                        break;
+                    case "option4":
+                        question.setOption4(jsonReader.nextString());
+                        break;
+                    case "answerNumber":
+                        question.setAnswerNumber(jsonReader.nextInt());
+                }
+            }
+            addQuestion(question);
+            jsonReader.endObject();
+        }
+        jsonReader.endArray();
+        jsonReader.close();
+    }
 }

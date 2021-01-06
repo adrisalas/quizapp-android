@@ -48,14 +48,16 @@ public class MainActivity extends AppCompatActivity {
         Button button_import = findViewById(R.id.button_import);
         button_import.setOnClickListener(view -> {
             dbHelper.initQuestionsTable();
-            finish();
-            startActivity(getIntent());
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.advisory)
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.yes, (dialog, id) -> {
+                        finish();
+                        startActivity(getIntent());
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         });
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.advisory)
-                .setPositiveButton(android.R.string.yes, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
     }
 
     /**

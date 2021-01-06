@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">App de Cuestionarios - Adri \&amp; Poky</string>
     <string name="import_btn">IMPORTAR</string>
-    <string name="advisory">Dado que la aplicación es una app de cuestionarios, las preguntas están en un idioma específico, el resto de la app soporta <b>español</b> e <b>ingles.</b></string>
+    <string name="advisory">La aplicación necesita <b>acceso a internet</b> para importar. \n\nDado que la aplicación es una app de cuestionarios, las preguntas están en un idioma específico, el resto de la app soporta <b>español</b> e <b>ingles.</b></string>
     <string name="time">0:30</string>
     <string name="questionCounter">Pregunta:</string>
     <string name="scoreCounter">Puntuación:</string>
