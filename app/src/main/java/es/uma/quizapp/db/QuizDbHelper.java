@@ -24,7 +24,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class QuizDbHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "empotrados.db";
+    public static final String DATABASE_NAME = "quizzappadripoky.db";
     public static final int DATABASE_VERSION = 1;
 
     private SQLiteDatabase db;
