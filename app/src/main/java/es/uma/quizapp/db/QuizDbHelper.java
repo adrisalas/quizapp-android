@@ -25,7 +25,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class QuizDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "quizzappadripoky.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 4;
 
     private SQLiteDatabase db;
 
@@ -49,7 +49,6 @@ public class QuizDbHelper extends SQLiteOpenHelper {
                 QuestionsColumns.COLUMN_ANSWER_3 + " TEXT, " +
                 QuestionsColumns.COLUMN_ANSWER_4 + " TEXT, " +
                 QuestionsColumns.COLUMN_CORRECT_ANSWER + " INTEGER" + ")");
-        initQuestionsTable();
     }
 
     /**
