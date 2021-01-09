@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">QuizApp - Adri \&amp; Poky</string>
+    <string name="app_name">QuizApp</string>
     <string name="import_btn">IMPORT</string>
     <string name="advisory">The app need <b>internet access</b> to import quizs. \n\nGiven the app is a Quiz App, the questions are in a specific language, the rest of the app supports <b>spanish</b> and <b>english.</b></string>
     <string name="time">0:30</string>
